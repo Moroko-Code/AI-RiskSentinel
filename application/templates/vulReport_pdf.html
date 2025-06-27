@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: sans-serif; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 6px; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2> Vulnerability Report</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>IP</th><th>OS</th><th>Scanned At</th><th>Port</th>
+        <th>Protocol</th><th>State</th><th>CVE</th>
+        <th>Description</th><th>Score</th><th>Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td>{{ r.ip }}</td>
+        <td>{{ r.os }}</td>
+        <td>{{ r.scanned_at }}</td>
+        <td>{{ r.port }}</td>
+        <td>{{ r.protocol }}</td>
+        <td>{{ r.state }}</td>
+        <td>{{ r.cve_id }}</td>
+        <td>{{ r.description }}</td>
+        <td>{{ r.score }}</td>
+        <td>{{ r.risk }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

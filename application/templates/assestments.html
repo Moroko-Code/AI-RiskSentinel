@@ -1,0 +1,161 @@
+{% extends "adminLayouts.html" %}
+
+{% block content %}
+
+<!-- partial -->
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-12 grid-margin">
+                <div class="card">
+                    <div class="add-items d-flex w-50">
+                        <form action="{{ url_for('Scanning') }}" method="post" novalidate class="w-100" id="scanForm">
+                            <fieldset class="form-group border p-4 rounded shadow-sm">
+                                <h4 class="mb-4">Network IP Address</h4>
+                                    {% with messages = get_flashed_messages(with_categories=true) %}
+                                        {% if messages %}
+                                            <div id="flash-messages">
+                                            {% for category, message in messages %}
+                                                <div class="alert alert-{{ category }}" role="alert">
+                                                {{ message }}
+                                                </div>
+                                            {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                <div class="mb-3 d-flex align-items-center gap-2">
+                                    <!-- IP Address Input -->
+                                    <input type="text" name="ip_range" id="ip_range" class="form-control form-control-lg" placeholder="Enter IP address">
+                                    
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-secondary btn-lg rounded-pill" id="scanBtn">Scan</button>
+                                </div>
+                                <div id="scanningStatus" class="mt-3 alert alert-info d-none">
+                                    <strong><span class="spinner-border spinner-border-sm me-2"></span>Scanning in progress...</strong>
+                                    <ul id="scanSteps" class="mt-2 mb-0 ps-3"></ul>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Table Section -->
+        <div class="row ">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Scan Entries</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th> IP Address </th>
+                                        <th> Operating System </th>
+                                        <th> Ports </th>
+                                        <th> Services </th>
+                                        <th> State </th>
+                                        <th> Score </th>
+                                        <th> Risk Level </th>
+                                        <th> CVE ID </th>
+                                        <th> Scan Date </th>
+                                        <th> Description </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in data %}
+                                    <tr class="{{ row.risk }}">
+                                        <td>{{ row.ip }}</td>
+                                        <td>{{ row.os }}</td>
+                                        <td>{{ row.port }}</td>
+                                        <td>{{ row.service }}</td>
+                                        <td>{{ row.state }}</td>
+                                        <td>{{ row.score }}</td>
+                                        <td>{{ row.risk }}</td>
+                                        <td>{{ row.cve_id }}</td>
+                                        <td>{{ row.scanned_at }}</td>
+                                        <td>{{ row.description }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            {% if page and page > 1 %}
+                                <a href="{{ url_for('scanner', page=page-1) }}" class="btn btn-outline-secondary btn-sm">← Previous</a>
+                            {% else %}
+                                <span></span>
+                            {% endif %}
+
+                            {% if page and total_pages %}
+                                <span>Page {{ page }} of {{ total_pages }}</span>
+                            {% endif %}
+
+                            {% if page and page < total_pages %}
+                                <a href="{{ url_for('scanner', page=page+1) }}" class="btn btn-outline-secondary btn-sm">Next →</a>
+                            {% else %}
+                                <span></span>
+                            {% endif %}
+                        </div>
+                        <!-- End Pagination -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- partial:partials/_footer.html -->
+    <footer class="footer">
+        <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © KatzStudents 2025</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank"></a> 
+            </span>
+        </div>
+    </footer>
+</div>
+<!-- main-panel ends -->
+
+<!-- JavaScript to simulate scanning -->
+<script>
+    const scanForm = document.getElementById('scanForm');
+    const scanBtn = document.getElementById('scanBtn');
+    const scanningStatus = document.getElementById('scanningStatus');
+    const scanSteps = document.getElementById('scanSteps');
+
+    const steps = [
+        'Parsing IP range...',
+        'Resolving hosts...',
+        'Scanning ports...',
+        'Checking services...',
+        'Identifying vulnerabilities...',
+        'Finalizing results...'
+    ];
+
+    scanForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        scanBtn.disabled = true;
+        scanningStatus.classList.remove('d-none');
+        scanSteps.innerHTML = '';
+
+        let index = 0;
+        const stepInterval = setInterval(() => {
+            if (index < steps.length) {
+                const li = document.createElement('li');
+                li.textContent = steps[index];
+                scanSteps.appendChild(li);
+                index++;
+            } else {
+                clearInterval(stepInterval);
+                scanForm.submit();
+            }
+        }, 600);
+    });
+</script>
+{% endblock %}
+
+
+

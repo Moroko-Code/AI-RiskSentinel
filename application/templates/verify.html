@@ -1,0 +1,43 @@
+
+{% extends "layouts.html" %}
+
+{% block content %}
+
+ <section class="page-section" id="contact">
+        <div class="container">
+            <!-- Icon Divider-->
+            <div class="divider-custom">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                <div class="divider-custom-line"></div>
+            </div>
+            <!-- Contact Section Form-->
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-xl-5"> <!-- Adjusted column size to make the form smaller -->
+                    <form name="verifyOTP" action="{{ url_for('verifyOTP') }}" method="post" novalidate>
+                        <fieldset class="form-group border p-2 rounded shadow-sm"> <!-- Reduced padding for height -->
+                            <legend class="text-center" style="font-weight: bold; font-size: 1.5rem; color: #333;">{{ title }}</legend>
+                            {{ form.hidden_tag() }}
+                            <p>
+                                {{ form.otp.label }}<br>
+                                {{ form.otp }}
+                                {% for error in form.otp.errors %}
+                                    <span class="error-message">{{ error }}</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.submit(class="btn btn-primary btn-block") }}
+                            </p>
+        
+                            <!-- Submit Button -->
+                    
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+
